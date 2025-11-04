@@ -11,9 +11,9 @@ Apprendre GraphQL en construisant la même API en REST puis en GraphQL pour comp
 ## 📖 Progression
 
 - [x] **Étape 1** : Setup initial du projet
-- [ ] **Étape 2** : API REST basique
-- [ ] **Étape 3** : Tests et documentation REST
-- [ ] **Étape 4** : Identification des problèmes REST
+- [x] **Étape 2** : API REST basique
+- [x] **Étape 3** : Tests et documentation REST
+- [x] **Étape 4** : Identification des problèmes REST
 - [ ] **Étape 5** : Setup GraphQL
 - [ ] **Étape 6** : Queries GraphQL basiques
 - [ ] **Étape 7** : Relations et résolution
