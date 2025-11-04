@@ -17,4 +17,4 @@ const borrowings = [
   { id: 2, bookId: 3, userName: "Sarah", borrowDate: "2024-10-20", returned: true }
 ];
 
-module.exports = { authors, books, borrowings };
+export { authors, books, borrowings };
