@@ -1,0 +1,42 @@
+# Define Types
+
+type Author {
+  id: Int!
+  name: String!
+  country: String!
+  birthYear: Int!
+}
+type Book {
+  id: Int!
+  title: String!
+  pages: Int!
+  year: Int!
+}
+type Borrowings {
+  id: Int!
+  userName: String!
+  borrowDate: String!
+  returned: Boolean!
+}
+
+# Entry Point : Queries (read operations)
+
+type Query {
+  #  Retrieve all authors
+  authors: [Author!]!
+
+  #  Retrieve author By id
+  author(id: Int!): Author
+
+  #   Retrieve all books
+
+  books: [Book!]!
+
+  #   Retrieve book By id
+
+  book(id: Int!): Book
+
+  # Retrieve all Borrowings
+
+  borrowings: [Borrowings!]!
+}
