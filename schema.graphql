@@ -1,48 +1,56 @@
-# Define Types
+# Type definitions
 
 type Author {
   id: Int!
   name: String!
   country: String!
   birthYear: Int!
-  books: [Book!]!  # 🔥 Relation : An author has many books
-
+  books: [Book!]!  # 🔥 Relation: an author has multiple books
 }
+
 type Book {
   id: Int!
   title: String!
   pages: Int!
   year: Int!
-  author: Author!  # 🔥 Relation : A book has an author
-  borrowings: [Borrowing!]!  # 🔥 Relation : A book has many borrowings
+  author: Author!  # 🔥 Relation: a book has an author
+  borrowings: [Borrowing!]!  # 🔥 Relation: a book has borrowings
 }
+
 type Borrowing {
   id: Int!
   userName: String!
   borrowDate: String!
   returned: Boolean!
-  book: Book!  # 🔥 Relation : A borrowing concerns a book
-
+  book: Book!  # 🔥 Relation: a borrowing concerns a book
 }
 
-# Entry Point : Queries (read operations)
-
+# Entry point: Queries (read operations)
 type Query {
-  #  Retrieve all authors
+  # Fetch all authors
   authors: [Author!]!
-
-  #  Retrieve author By id
+  
+  # Fetch an author by ID
   author(id: Int!): Author
-
-  #   Retrieve all books
-
+  
+  # Fetch all books
   books: [Book!]!
-
-  #   Retrieve book By id
-
+  
+  # Fetch a book by ID
   book(id: Int!): Book
-
-  # Retrieve all Borrowings
-
+  
+  # Fetch all borrowings
   borrowings: [Borrowing!]!
+}
+
+# Entry point: Mutations (write operations)
+type Mutation {
+  # Create a borrowing
+  createBorrowing(bookId: Int!, userName: String!): Borrowing!
+  
+  # Return a book
+  returnBook(borrowingId: Int!): Borrowing!
+  
+  # Add a book
+  addBook(title: String!, authorId: Int!, pages: Int!, year: Int!): Book!
 }

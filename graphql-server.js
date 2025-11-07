@@ -6,8 +6,7 @@ import { authors, books, borrowings } from "./data.js";
 // Load schema from external file
 const typeDefs = fs.readFileSync("./schema.graphql", "utf8");
 
-//Define Resolvers : Functions that will fetch the data for each type in the schema
-
+// Define Resolvers: Functions that will fetch the data for each type in the schema
 const resolvers = {
   Query: {
     // Fetch all authors, books, and borrowings
@@ -19,19 +18,20 @@ const resolvers = {
     author: (parent, args) => {
       return authors.find((a) => a.id === args.id);
     },
+    
     // Fetch a single book by ID
     book: (parent, args) => {
       return books.find((b) => b.id === args.id);
     },
   },
 
-  //Reolvers for relationships between types
-
+  // Resolvers for relationships between types
   Author: {
     books: (parent) => {
       return books.filter((b) => b.authorId === parent.id);
     },
   },
+  
   // Resolver for Book type to fetch its author
   Book: {
     author: (parent) => {
@@ -41,36 +41,39 @@ const resolvers = {
       return borrowings.filter((bor) => bor.bookId === parent.id);
     },
   },
+  
   // Resolver for Borrowing type to fetch its book
   Borrowing: {
     book: (parent) => {
       return books.find((b) => b.id === parent.bookId);
     },
   },
-};
 
-// Define Mutations (Create, Update, Delete operations)
-Mutation: {
-  // Create a new borrowing
-  createBorrowing: (parent, args) => {
-    const newBorrowing = {
-      id: borrowings.length + 1,
-      bookId: args.bookId,
-      borrowerName: args.borrowerName,
-      borrowDate: new Date().toISOString().split("T")[0],
-      returned: false,
-    };
-    borrowings.push(newBorrowing);
-    return newBorrowing;
-  };
+  // 🔥 Mutations (Create, Update, Delete operations)
+  Mutation: {
+    // Create a new borrowing
+    createBorrowing: (parent, args) => {
+      const newBorrowing = {
+        id: borrowings.length + 1,
+        bookId: args.bookId,
+        userName: args.userName,  // ✅ userName (not borrowerName!)
+        borrowDate: new Date().toISOString().split("T")[0],
+        returned: false,
+      };
+      borrowings.push(newBorrowing);
+      return newBorrowing;
+    },
 
-  // Mark a borrowing as returned
-  returnBook: (parent, args) => {
-    const borrowing = borrowings.find((b) => b.id === args.borrowingId);
-    if (borrowing) {
+    // Mark a borrowing as returned
+    returnBook: (parent, args) => {
+      const borrowing = borrowings.find((b) => b.id === args.borrowingId);
+      if (!borrowing) {
+        throw new Error("Borrowing not found");
+      }
       borrowing.returned = true;
       return borrowing;
-    }
+    },
+
     // Add a Book
     addBook: (parent, args) => {
       const newBook = {
@@ -82,9 +85,10 @@ Mutation: {
       };
       books.push(newBook);
       return newBook;
-    };
-  };
-}
+    },
+  },
+};
+
 // Create Apollo Server instance
 /**
  * Apollo Server => Node.js Library that helps to build a GraphQL server
@@ -96,9 +100,10 @@ Mutation: {
 
 // Build a Copy of Apollo Server Customized
 const server = new ApolloServer({
-  typeDefs, //Schema Definition
-  resolvers, //Resolvers Definition
+  typeDefs,   // Schema Definition
+  resolvers,  // Resolvers Definition
 });
+
 // Start the server
 startStandaloneServer(server, {
   listen: { port: 4001 },
