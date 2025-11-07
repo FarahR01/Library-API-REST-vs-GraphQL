@@ -1,124 +1,165 @@
-# 📡 REST API - Exemples et Problèmes
+# 📚 Library API: REST vs GraphQL
 
-## 🚀 Démarrer l'API REST
+## 🎯 Project Goal
 
+Learn GraphQL by building the same API in both REST and GraphQL to understand:
+
+- Concrete differences
+- Advantages and disadvantages of each approach
+- When to use REST vs GraphQL
+
+---
+
+## 📖 Progress
+
+- [x] **Step 1**: Initial project setup
+- [x] **Step 2**: Basic REST API
+- [x] **Step 3**: REST testing and documentation
+- [x] **Step 4**: Identifying REST problems
+- [x] **Step 5**: GraphQL setup
+- [x] **Step 6**: Basic GraphQL queries
+- [x] **Step 7**: Relations and resolution
+- [x] **Step 8**: GraphQL mutations
+- [x] **Step 9**: Final comparison and benchmarks
+
+---
+
+## 📂 Project Structure
+
+```
+library-rest-vs-graphql/
+├── data.js                  # Shared data (authors, books, borrowings)
+├── rest-server.js           # REST API
+├── graphql-server.js        # GraphQL API
+├── schema.graphql           # GraphQL schema
+├── REST-EXAMPLES.md         # REST documentation and examples
+├── GRAPHQL-EXAMPLES.md      # GraphQL documentation and examples
+├── GRAPHQL-MUTATIONS.md     # Mutation examples
+├── COMPARISON.md            # Detailed REST vs GraphQL comparison
+└── README.md
+```
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+```bash
+npm install
+```
+
+### Run REST API
 ```bash
 npm run rest
 ```
+API available at **http://localhost:4000**
 
-## 📋 Endpoints disponibles
-
-### Auteurs
-
+### Run GraphQL API
 ```bash
-# Récupérer tous les auteurs
-curl http://localhost:4000/authors
-
-# Récupérer un auteur
-curl http://localhost:4000/authors/1
-
-# Récupérer les livres d'un auteur
-curl http://localhost:4000/authors/1/books
+npm run graphql
 ```
-
-### Livres
-
-```bash
-# Récupérer tous les livres
-curl http://localhost:4000/books
-
-# Récupérer un livre
-curl http://localhost:4000/books/1
-
-# Récupérer l'auteur d'un livre
-curl http://localhost:4000/books/1/author
-```
-
-### Emprunts
-
-```bash
-# Récupérer tous les emprunts
-curl http://localhost:4000/borrowings
-
-# Créer un emprunt
-curl -X POST http://localhost:4000/borrowings \
-  -H "Content-Type: application/json" \
-  -d '{"bookId": 2, "userName": "Mohamed"}'
-```
+API available at **http://localhost:4001**  
+Apollo Studio interface: open **http://localhost:4001** in your browser
 
 ---
 
-## ❌ Problèmes identifiés avec REST
+## 📦 Tech Stack
 
-### 1. **Multiple requêtes (N+1 Problem)**
+- **Node.js** v18+
+- **Express** - REST server
+- **Apollo Server** - GraphQL server
+- **GraphQL** - Query language
+- In-memory data (no DB to simplify learning)
 
-**Scénario** : Je veux afficher un livre avec son auteur
+---
 
+## 🔍 Quick Examples
+
+### REST
 ```bash
-# Requête 1 : Récupérer le livre
+# Book with author = 2 requests
 curl http://localhost:4000/books/1
-
-# Requête 2 : Récupérer l'auteur
 curl http://localhost:4000/books/1/author
 ```
 
-❌ **2 requêtes HTTP** pour une seule information logique !
-
-### 2. **Over-fetching**
-
-**Scénario** : Je veux juste le titre et l'année des livres
-
-```bash
-curl http://localhost:4000/books
-```
-
-❌ Je reçois **TOUTES** les données (pages, authorId, etc.) même si je ne les utilise pas !
-
-```json
-[
-  {
-    "id": 1,
-    "title": "Les Misérables",
-    "authorId": 1,
-    "pages": 1463, // ❌ Je n'en ai pas besoin
-    "year": 1862
+### GraphQL
+```graphql
+# Book with author = 1 request
+query {
+  book(id: 1) {
+    title
+    author {
+      name
+    }
   }
-]
+}
 ```
-
-### 3. **Under-fetching**
-
-**Scénario** : Je veux un auteur avec ses livres
-
-```bash
-# Requête 1
-curl http://localhost:4000/authors/1
-
-# Requête 2
-curl http://localhost:4000/authors/1/books
-```
-
-❌ Encore **2 requêtes** ! L'endpoint `/authors/1` ne contient pas les livres.
-
-### 4. **Endpoints fixes et nombreux**
-
-Pour chaque relation, je dois créer un endpoint spécifique :
-
-- `/authors/:id/books`
-- `/books/:id/author`
-- `/books/:id/borrowings` (si on voulait l'ajouter)
-
-❌ L'API grandit vite et devient difficile à maintenir.
 
 ---
 
-## 🎯 Ce que GraphQL va résoudre
+## 📚 Complete Documentation
 
-GraphQL permettra de :
+- **[REST-EXAMPLES.md](REST-EXAMPLES.md)** - All REST examples and identified problems
+- **[GRAPHQL-EXAMPLES.md](GRAPHQL-EXAMPLES.md)** - GraphQL queries and comparisons
+- **[GRAPHQL-MUTATIONS.md](GRAPHQL-MUTATIONS.md)** - Mutations (create, update, delete)
+- **[COMPARISON.md](COMPARISON.md)** - Detailed comparison with use cases
 
-- ✅ **Une seule requête** pour livre + auteur
-- ✅ **Demander exactement les champs** dont on a besoin
-- ✅ **Relations imbriquées** dans une seule query
-- ✅ **Un seul endpoint** pour toutes les opérations
+---
 
-**Prochaine étape** : Implémenter la même API en GraphQL et comparer !
+## 🎓 What I Learned
+
+### REST Problems Identified
+1. ❌ **N+1 Problem** - Multiple requests to fetch relations
+2. ❌ **Over-fetching** - Receiving too much data
+3. ❌ **Under-fetching** - Not receiving enough data
+4. ❌ **Multiple endpoints** - Complex maintenance
+
+### GraphQL Solutions
+1. ✅ **Single request** - For all relations
+2. ✅ **On-demand fields** - Client chooses exactly what they want
+3. ✅ **Nested relations** - Automatic resolution
+4. ✅ **Single endpoint** - `/graphql` for everything
+5. ✅ **Auto-documentation** - Via schema
+
+### When to Use What?
+- **REST**: Simple APIs, basic CRUD, important caching
+- **GraphQL**: Complex relations, multiple clients, mobile optimization
+
+---
+
+## 🚀 Possible Next Steps
+
+- [ ] Add DataLoader (N+1 query optimization)
+- [ ] Implement Subscriptions (real-time)
+- [ ] Add authentication (JWT)
+- [ ] Connect to a real database
+- [ ] Unit and integration tests
+- [ ] Rate limiting and security
+- [ ] Pagination
+
+---
+
+## 📈 Results
+
+**To fetch 5 borrowings with books and authors:**
+
+| Metric | REST | GraphQL |
+|--------|------|---------|
+| Number of requests | 11 | 1 |
+| Unnecessary data | ~60% | 0% |
+| Client complexity | High | Low |
+
+---
+
+## 👨‍💻 Author
+
+**Farah Rihane**  
+Learning project - November 2025
+
+This repo demonstrates a practical and progressive approach to learning GraphQL by directly comparing it with REST.
+
+---
+
+## 📝 License
+
+MIT - Feel free to use for learning purposes
